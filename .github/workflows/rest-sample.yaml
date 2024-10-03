@@ -22,13 +22,13 @@ concurrency:
 
 jobs:
   test-sample:
-    runs-on: fabric-ubuntu-20.04
+    runs-on: ${{ github.repository == 'hyperledger/fabric-samples' && 'fabric-ubuntu-22.04' || 'ubuntu-22.04' }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VER }}
           cache: 'npm'
@@ -44,4 +44,15 @@ jobs:
 
       - name: Test REST Sample Application
         run: npm test
+        working-directory: asset-transfer-basic/rest-api-typescript
+
+      - name: Build REST Sample Docker Image
+        run: docker build -t ghcr.io/hyperledger/fabric-rest-sample .
+        working-directory: asset-transfer-basic/rest-api-typescript
+
+      - name: Publish REST Sample Docker Image
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker push ghcr.io/hyperledger/fabric-rest-sample:latest
         working-directory: asset-transfer-basic/rest-api-typescript

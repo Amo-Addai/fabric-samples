@@ -8,7 +8,6 @@ import { KeyEndorsementPolicy } from 'fabric-shim';
 
 @Info({title: 'AssetContract', description: 'Asset Transfer Smart Contract, using State Based Endorsement(SBE), implemented in TypeScript' })
 export class AssetContract extends Contract {
-
     // CreateAsset creates a new asset
     // CreateAsset sets the endorsement policy of the assetId Key, such that current owner Org Peer is required to endorse future updates
     @Transaction()
@@ -91,7 +90,7 @@ export class AssetContract extends Contract {
     // AssetExists returns true when asset with given ID exists
     public async AssetExists(ctx: Context, assetId: string): Promise<boolean> {
         const buffer = await ctx.stub.getState(assetId);
-        return (!!buffer && buffer.length > 0);
+        return buffer.length > 0;
     }
 
     // getClientOrgId gets the client's OrgId (MSPID)
@@ -109,15 +108,14 @@ export class AssetContract extends Contract {
 
     // setStateBasedEndorsementNOutOf sets an endorsement policy to the assetId Key
     // setStateBasedEndorsementNOutOf enforces that a given number of Orgs (N) out of the specified Orgs must endorse future update transactions for the specified assetId Key.
-    private static async setStateBasedEndorsementNOutOf(ctx: Context, assetId: string, nOrgs:number, ownerOrgs: string[]): Promise<void> {
+    private static async setStateBasedEndorsementNOutOf(ctx: Context, assetId: string, nOrgs: number, ownerOrgs: string[]): Promise<void> {
         const ROLE_TYPE_MEMBER = 'MEMBER';
 
         // Use the KeyEndorsementPolicy helper form the chaincode libarries
         // If you need more advanced policies, please use that helper as a reference point.
         const keyEndorsementPolicy = new KeyEndorsementPolicy();
-        keyEndorsementPolicy.addOrgs(ROLE_TYPE_MEMBER,...ownerOrgs);
+        keyEndorsementPolicy.addOrgs(ROLE_TYPE_MEMBER, ...ownerOrgs);
 
         await ctx.stub.setStateValidationParameter(assetId, keyEndorsementPolicy.getPolicy());
     }
-
 }

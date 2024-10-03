@@ -5,12 +5,12 @@
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "engines": {
-        "node": ">=18.12.0"
+        "node": ">=18"
     },
     "scripts": {
         "build": "tsc",
         "build:watch": "tsc -w",
-        "lint": "eslint ./src",
+        "lint": "eslint src",
         "prepare": "npm run build",
         "pretest": "npm run lint",
         "start": "node ./dist/app",
@@ -19,14 +19,15 @@
     "author": "Hyperledger",
     "license": "Apache-2.0",
     "dependencies": {
-        "@hyperledger/fabric-gateway": "^1.1.0"
+        "@grpc/grpc-js": "^1.11.3",
+        "@hyperledger/fabric-gateway": "^1.6.0"
     },
     "devDependencies": {
-        "@tsconfig/node18": "^2.0.0",
-        "@types/node": "^18.16.1",
-        "@typescript-eslint/eslint-plugin": "^5.22.0",
-        "@typescript-eslint/parser": "^5.22.0",
-        "eslint": "^8.14.0",
-        "typescript": "~5.0.4"
+        "@eslint/js": "^9.3.0",
+        "@tsconfig/node18": "^18.2.4",
+        "@types/node": "^18.19.33",
+        "eslint": "^8.57.0",
+        "typescript": "~5.4.5",
+        "typescript-eslint": "^7.11.0"
     }
 }
